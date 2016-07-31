@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="WheelProgress">
+
+        <attr name="itemColor" format="color"></attr>
+        <attr name="itemWidth" format="integer"></attr>
+        <attr name="itemCornersRadius" format="float"></attr>
+        <attr name="oneSeftRotate" format="boolean"></attr>
+    </declare-styleable>
+
+
+</resources>
