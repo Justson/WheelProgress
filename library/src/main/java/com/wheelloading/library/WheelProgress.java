@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
@@ -138,7 +137,6 @@ public class WheelProgress extends View {
                 initRectFProperty();
             }
         });
-        Log.d(TAG, "itemWidth:" + itemWidth);
     }
 
     @Override //依附窗口的时候就开启自身旋转动画
