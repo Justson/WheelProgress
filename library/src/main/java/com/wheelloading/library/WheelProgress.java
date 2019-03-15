@@ -1,4 +1,4 @@
-package com.ucmap.just_upatch;
+package com.wheelloading.library;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -99,25 +99,22 @@ public class WheelProgress extends View {
         int count = ta.getIndexCount();//获取自定义所有属性个数
         for (int i = 0; i < count; i++) {
             int index = ta.getIndex(0);
-            switch (index) {
-                //获取自定义颜色
-                case R.styleable.WheelProgress_itemColor:
-                    itemColor = ta.getColor(index, Color.parseColor("#f1f2f3"));
-                    break;
+            //获取自定义颜色
+            if (index == R.styleable.WheelProgress_itemColor) {
+                itemColor = ta.getColor(index, Color.parseColor("#f1f2f3"));
                 //获取自定义条目个数
-                case R.styleable.WheelProgress_itemWidth:
-                    itemWidth = ta.getInteger(index, 12);
-                    break;
-                case R.styleable.WheelProgress_itemCornersRadius:
-                    itemCornersRadius = ta.getFloat(index, 5f);
-                    break;
-                //获取Boolean 属性
-                case R.styleable.WheelProgress_oneSeftRotate:
-                    oneSeftRotate = ta.getBoolean(index, false);
-                    Log.i("Info", "soneSeftRotate:" + oneSeftRotate);
-                    break;
-            }
+            } else if (index == R.styleable.WheelProgress_itemWidth) {
+                itemWidth = ta.getInteger(index, 12);
 
+            } else if (index == R.styleable.WheelProgress_itemCornersRadius) {
+                itemCornersRadius = ta.getFloat(index, 5f);
+
+                //获取Boolean 属性
+            } else if (index == R.styleable.WheelProgress_oneSeftRotate) {
+                oneSeftRotate = ta.getBoolean(index, false);
+                Log.i("Info", "soneSeftRotate:" + oneSeftRotate);
+
+            }
         }
         ta.recycle();
         //初始化画笔
@@ -224,9 +221,6 @@ public class WheelProgress extends View {
     }
 
 
-    /***************************************************
-     * setter+getter
-     *************************************************/
     public int getSpeed() {
         return speed;
     }
