@@ -76,7 +76,7 @@ public class WheelProgress extends View {
     /**
      * 速度因子
      */
-    private int speed = 120;
+    private int speed = 100;
     /**
      * 是否旋转
      */
@@ -173,7 +173,7 @@ public class WheelProgress extends View {
         centerX = radius;
         centerY = radius;
         float startPosition = ((radius) - itemWidth / 2);
-        float lineLength = ((radius) / 2.3F);
+        float lineLength = ((radius) / 2.4F);
         rectF.left = startPosition;
         rectF.top = 0 + radius / 3.5F;
         rectF.right = startPosition + itemWidth;
