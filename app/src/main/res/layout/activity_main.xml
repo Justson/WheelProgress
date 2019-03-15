@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     android:background="#A3000000"
     tools:context=".MainActivity">
-
     <com.wheelloading.library.WheelProgress
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
-
+        android:layout_width="20dp"
+        app:itemWidth="1dp"
+        app:oneSeftRotate="true"
+        android:layout_height="80dp"/>
 </android.support.constraint.ConstraintLayout>

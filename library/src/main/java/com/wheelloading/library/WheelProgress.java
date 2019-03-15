@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
@@ -26,7 +27,7 @@ public class WheelProgress extends View {
     /**
      * 条目宽度
      */
-    private int itemWidth = 10;
+    private float itemWidth = 3;
     /**
      * 条目的圆角
      */
@@ -75,7 +76,7 @@ public class WheelProgress extends View {
     /**
      * 速度因子
      */
-    private int speed = 100;
+    private int speed = 120;
     /**
      * 是否旋转
      */
@@ -83,7 +84,7 @@ public class WheelProgress extends View {
     /**
      * 控制画笔旋转度数
      */
-    private int controler;
+    private int controller;
     /**
      * 用于控制自身是否旋转,默认为不旋转
      */
@@ -92,6 +93,8 @@ public class WheelProgress extends View {
      * 旋转动画
      */
     private ObjectAnimator objectAnimator;
+
+    public static final String TAG = WheelProgress.class.getSimpleName();
 
     public WheelProgress(Context context) {
         this(context, null);
@@ -112,21 +115,12 @@ public class WheelProgress extends View {
         WHEEL_HEIGHT *= DENSITY;
         WHEEL_WIDTH *= DENSITY;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.WheelProgress, defStyleAttr, 0);
-        int count = ta.getIndexCount();//获取自定义所有属性个数
-        for (int i = 0; i < count; i++) {
-            int index = ta.getIndex(0);
-            //获取自定义颜色
-            if (index == R.styleable.WheelProgress_itemColor) {
-                itemColor = ta.getColor(index, Color.parseColor("#f1f2f3"));
-                //获取自定义条目个数
-            } else if (index == R.styleable.WheelProgress_itemWidth) {
-                itemWidth = ta.getInteger(index, 12);
-            } else if (index == R.styleable.WheelProgress_itemCornersRadius) {
-                itemCornersRadius = ta.getFloat(index, 5f);
-            } else if (index == R.styleable.WheelProgress_oneSeftRotate) {
-                oneSeftRotate = ta.getBoolean(index, false);
-            }
-        }
+        itemWidth *= DENSITY;
+        int index = ta.getIndex(0);
+        itemColor = ta.getColor(R.styleable.WheelProgress_itemColor, Color.parseColor("#f1f2f3"));
+        itemWidth = ta.getDimension(R.styleable.WheelProgress_itemWidth, itemWidth);
+        itemCornersRadius = ta.getFloat(R.styleable.WheelProgress_itemCornersRadius, 5f);
+        oneSeftRotate = ta.getBoolean(R.styleable.WheelProgress_oneSeftRotate, false);
         ta.recycle();
         paint = new Paint();
         paint.setColor(itemColor);
@@ -144,6 +138,7 @@ public class WheelProgress extends View {
                 initRectFProperty();
             }
         });
+        Log.d(TAG, "itemWidth:" + itemWidth);
     }
 
     @Override //依附窗口的时候就开启自身旋转动画
@@ -177,16 +172,17 @@ public class WheelProgress extends View {
         //记录圆心的位置， 用于旋转canvas
         centerX = radius;
         centerY = radius;
-        int startPosition = (radius) - itemWidth / 2;
-        int lineLength = (radius) / 2 - 5;
+        float startPosition = ((radius) - itemWidth / 2);
+        float lineLength = ((radius) / 2.3F);
         rectF.left = startPosition;
-        rectF.top = 0 + 15f;
+        rectF.top = 0 + radius / 3.5F;
         rectF.right = startPosition + itemWidth;
         rectF.bottom = rectF.top + lineLength;
     }
 
     /**
      * 测量控件
+     *
      * @param widthMeasureSpec
      * @param heightMeasureSpec
      */
@@ -196,7 +192,7 @@ public class WheelProgress extends View {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        width = height = Math.min(width, height);     //两者之间取最小值
+        width = height = Math.min(width, height);
         this.setMeasuredDimension(widthMode == MeasureSpec.AT_MOST ? WHEEL_WIDTH : width, heightMode == MeasureSpec.AT_MOST ? WHEEL_HEIGHT : height);
     }
 
@@ -206,21 +202,21 @@ public class WheelProgress extends View {
         /**
          * 旋转画布
          */
-        canvas.rotate(controler * 30f, centerX, centerY);
-        controler++;
-        if (controler == 12) {
-            controler = 0;
+        canvas.rotate(controller * 30f, centerX, centerY);
+        controller++;
+        if (controller == 12) {
+            controller = 0;
         }
         for (int i = 0; i < itemNumber; i++) {
             /**
              * 设置透明度
              */
             canvas.drawRoundRect(rectF, itemCornersRadius, itemCornersRadius, paint);
-            int tem = ALPHA - ((ALPHA / itemNumber) * i);
-            if (tem <= 80) {
-                tem = 80;
+            int alphaValue = ALPHA - ((ALPHA / itemNumber) * i);
+            if (alphaValue <= 80) {
+                alphaValue = 80;
             }
-            paint.setAlpha(tem);
+            paint.setAlpha(alphaValue);
             canvas.rotate(-30f, centerX, centerY);
         }
         if (isRotate) {
@@ -251,9 +247,9 @@ public class WheelProgress extends View {
     }
 
     public void cancelOneSelfAnimator() {
-
-        if (objectAnimator != null && objectAnimator.isStarted())
+        if (objectAnimator != null && objectAnimator.isStarted()) {
             objectAnimator.cancel();
+        }
     }
 
 }
