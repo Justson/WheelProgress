@@ -222,7 +222,6 @@ public class WheelProgress extends View {
         if (isRotate) {
             postInvalidateDelayed(speed);
         }
-        Log.d(TAG, "onDraw");
     }
 
 
