@@ -9,8 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 
 /**
@@ -128,18 +128,17 @@ public class WheelProgress extends View {
         paint.setDither(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setAlpha(255);
-        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                resultWidth = WheelProgress.this.getMeasuredWidth();
-                resultHeight = WheelProgress.this.getMeasuredHeight();
-                WheelProgress.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                initRectFProperty();
-            }
-        });
     }
 
-    @Override //依附窗口的时候就开启自身旋转动画
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        resultWidth = WheelProgress.this.getMeasuredWidth();
+        resultHeight = WheelProgress.this.getMeasuredHeight();
+        initRectFProperty();
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         startOneSelfAnimator();
@@ -194,21 +193,25 @@ public class WheelProgress extends View {
         this.setMeasuredDimension(widthMode == MeasureSpec.AT_MOST ? WHEEL_WIDTH : width, heightMode == MeasureSpec.AT_MOST ? WHEEL_HEIGHT : height);
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == View.GONE || visibility == View.INVISIBLE) {
+            cancelOneSelfAnimator();
+        } else {
+            startOneSelfAnimator();
+        }
+        controller = 0;
+        super.setVisibility(visibility);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        /**
-         * 旋转画布
-         */
         canvas.rotate(controller * 30f, centerX, centerY);
         controller++;
         if (controller == 12) {
             controller = 0;
         }
         for (int i = 0; i < itemNumber; i++) {
-            /**
-             * 设置透明度
-             */
             canvas.drawRoundRect(rectF, itemCornersRadius, itemCornersRadius, paint);
             int alphaValue = ALPHA - ((ALPHA / itemNumber) * i);
             if (alphaValue <= 80) {
